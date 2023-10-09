@@ -13,3 +13,19 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+./code/web/.DS_Store
+./code/web/node_modules/
+./code/web/dist/
+./code/web/npm-debug.log*
+./code/web/yarn-debug.log*
+./code/web/yarn-error.log*
+./code/web/package-lock.json
+./code/web/tests/**/coverage/
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
