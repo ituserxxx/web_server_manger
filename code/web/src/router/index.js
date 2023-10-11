@@ -54,7 +54,48 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/service',
+    component: Layout,
+    redirect: '/service/list',
+    name: '服务应用管理',
+    meta: { title: '服务应用管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'list',
+        name: '列表',
+        component: () => import('@/views/service/list'),
+        meta: { title: 'list', icon: 'table' }
+      },
+      {
+        path: 'add',
+        name: '新增',
+        component: () => import('@/views/service/add'),
+        meta: { title: '新增', icon: 'table' }
+      }
+    ]
+  },
+  {
+    path: '/my_host',
+    component: Layout,
+    redirect: '/my_host/list',
+    name: '主机管理',
+    meta: { title: '主机管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'list',
+        name: '列表',
+        component: () => import('@/views/my_host/list'),
+        meta: { title: '列表', icon: 'table' }
+      },
+      {
+        path: 'add',
+        name: '新增',
+        component: () => import('@/views/my_host/add'),
+        meta: { title: '新增', icon: 'table' }
+      }
+    ]
+  },
   {
     path: '/example',
     component: Layout,
