@@ -65,7 +65,7 @@ export const constantRoutes = [
         path: 'list',
         name: '列表',
         component: () => import('@/views/service/list'),
-        meta: { title: 'list', icon: 'table' }
+        meta: { title: '列表', icon: 'table' }
       },
       {
         path: 'add',
