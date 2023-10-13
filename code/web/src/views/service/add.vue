@@ -82,7 +82,7 @@
         </div>
       </div>
 
-      <el-form-item label="检测开关">
+      <el-form-item label="状态检测">
         <el-switch v-model="form.is_open_check" />
       </el-form-item>
 

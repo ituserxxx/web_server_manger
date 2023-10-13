@@ -17,8 +17,10 @@
       <!-- <el-table-column prop="is_open_check" label="检测开关" width="180"></el-table-column>
        -->
 
-      <el-table-column prop="is_open_check" label="检测开关">
-        <el-switch v-model="is_open_check" disabled> </el-switch>
+      <el-table-column label="状态检测">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.is_open_check"></el-switch>
+        </template>
       </el-table-column>
 
       <el-table-column prop="desc" label="描述"> </el-table-column>
@@ -27,10 +29,12 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
+            @click="handleView(scope.$index, scope.row)"
             type="primary"
-            @click="handleEdit(scope.$index, scope.row)"
-            >查看</el-button
+            style="margin-left: 16px"
           >
+            查看
+          </el-button>
 
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">
             编辑
@@ -45,6 +49,17 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-drawer
+      title=""
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+    >
+      <p>应用名称：web1</p>
+      <p>部署服务器：192.168.1.1</p>
+      <p>应用类型：前后端项目</p>
+    </el-drawer>
   </div>
 </template>
 
@@ -54,8 +69,11 @@ import { getList } from "@/api/table";
 export default {
   data() {
     return {
-      tableData: null,
+      tableData: [],
       listLoading: true,
+      drawer: false,
+      drawerData: {},
+      direction: "rtl",
     };
   },
   created() {
@@ -87,6 +105,19 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
+    },
+    handleView(index, row) {
+      this.drawer = true;
+      this.drawerData = this.tableData[index];
+      console.log(index, row);
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          this.drawerData = {};
+          done();
+        })
+        .catch((_) => {});
     },
     handleDelete(index, row) {
       console.log(index, row);
