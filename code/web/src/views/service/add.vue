@@ -6,9 +6,9 @@
       </el-form-item>
 
       <el-form-item label="部署服务器">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="form.host_id" placeholder="请选择">
           <el-option
-            v-for="item in form.host_list"
+            v-for="item in host_list"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -144,28 +144,30 @@
 export default {
   data() {
     return {
+      host_list: [
+        {
+          id: 1,
+          name: "王小虎",
+          ip: "127.0.0.1",
+          ssh_passwd: "123456",
+          desc: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          id: 2,
+          name: "王小虎",
+          ip: "127.0.0.1",
+          ssh_passwd: "123456",
+          desc: "上海市普陀区金沙江路 1517 弄",
+        },
+      ],
       form: {
         service_type: "",
         is_open_check: false,
         is_open_check_qian: false,
         is_open_check_hou: false,
         deploy_method: "",
-        host_list: [
-          {
-            id: 1,
-            name: "王小虎",
-            ip: "127.0.0.1",
-            ssh_passwd: "123456",
-            desc: "上海市普陀区金沙江路 1518 弄",
-          },
-          {
-            id: 2,
-            name: "王小虎",
-            ip: "127.0.0.1",
-            ssh_passwd: "123456",
-            desc: "上海市普陀区金沙江路 1517 弄",
-          },
-        ],
+        host_id: "",
+
         name: "",
         region: "",
         date1: "",

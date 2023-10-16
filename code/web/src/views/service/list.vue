@@ -23,6 +23,13 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="当前状态">
+        <template slot-scope="scope">
+          <el-button type="info" size="mini" plain>信息按钮</el-button>
+          <el-button type="success" size="mini" plain>成功按钮</el-button>
+          <el-button type="warning" size="mini" plain>警告按钮</el-button>
+        </template>
+      </el-table-column>
       <el-table-column prop="desc" label="描述"> </el-table-column>
 
       <el-table-column label="操作">
@@ -56,9 +63,37 @@
       :direction="direction"
       :before-close="handleClose"
     >
-      <p>应用名称：web1</p>
-      <p>部署服务器：192.168.1.1</p>
-      <p>应用类型：前后端项目</p>
+      <div style="margin: auto 10%">
+        <p>应用名称：web1</p>
+        <p>部署服务器：192.168.1.1</p>
+        <p>应用类型：前后端项目</p>
+        <p>部署方式：前后分离</p>
+        <div style="margin: auto 10%">
+          前端部署信息
+          <p>git 仓库地址</p>
+          <p>代码位置：giteeexx.com</p>
+          <p>线上分支</p>
+          后端部署信息
+          <p>git 仓库地址</p>
+          <p>代码位置：giteeexx.com</p>
+          <p>线上分支</p>
+        </div>
+        <div>
+          开启检测
+          <div style="margin: auto 10%">
+            检测-前端配置
+            <p>外网 Url: www.a.com</p>
+            <p>内网 Url: www.b.com</p>
+          </div>
+
+          <div style="margin: auto 10%">
+            检测-后端配置
+            <p>检测端口：127.0.0.1:888</p>
+            <p>外网 Url: www.a.com</p>
+            <p>内网 Url: www.b.com</p>
+          </div>
+        </div>
+      </div>
     </el-drawer>
   </div>
 </template>
