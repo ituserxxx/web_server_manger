@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
+    <el-form ref="form" :model="form" label-width="120px" :label-position="labelPosition">
       <el-form-item label="ip">
         <el-input size="medium" v-model="form.ip" />
       </el-form-item>
@@ -21,9 +21,11 @@
 </template>
 
 <script>
+import { myhostAdd } from "@/api/myhost";
 export default {
   data() {
     return {
+      labelPosition: "left",
       form: {
         ip: "",
         ssh_user: "",
@@ -35,7 +37,9 @@ export default {
   methods: {
     onSubmit() {
       console.log(this.form);
-      this.$message("submit!");
+      myhostAdd(this.form).then((response) => {
+        this.list = response.data;
+      });
     },
   },
 };

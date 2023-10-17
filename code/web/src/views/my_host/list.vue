@@ -16,7 +16,7 @@
       <el-table-column prop="desc" label="描述"> </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+          <el-button size="mini" @click="showEditView(scope.$index, scope.row)"
             >编辑</el-button
           >
           <el-button
@@ -35,7 +35,7 @@
       :before-close="handleClose"
     >
       <el-form ref="form" :model="editForm" label-width="120px">
-        <el-input size="medium" v-model="editForm.id" style="hidden" />
+        <el-input size="medium" v-model="editForm.id" style="visibility: hidden" />
         <el-form-item label="ip">
           <el-input size="medium" v-model="editForm.ip" />
         </el-form-item>
@@ -49,7 +49,7 @@
           <el-input v-model="editForm.desc" type="textarea" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">保存</el-button>
+          <el-button type="primary" @click="onUpdate">保存</el-button>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -57,12 +57,12 @@
 </template>
 
 <script>
-import { getList } from "@/api/table";
+import { myhostGetList, myhostUpdate, myhostDel } from "@/api/myhost";
 
 export default {
   data() {
     return {
-      tableData: null,
+      tableData: [],
       listLoading: true,
       editDrawer: false,
       direction: "rtl",
@@ -81,7 +81,9 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true;
-      getList().then((response) => {
+      myhostGetList().then((res) => {
+        this.$message("myhostGetList ok");
+        console.log(res);
         this.tableData = [
           {
             id: 1,
@@ -91,20 +93,28 @@ export default {
             desc: "上海市普陀区金沙江路 1518 弄",
           },
         ];
+        this.tableData = res.data;
         this.listLoading = false;
       });
     },
-    handleEdit(index, row) {
+    showEditView(index, row) {
       console.log(index, row);
       this.editDrawer = true;
       this.editForm = this.tableData[index];
     },
-    onSubmit() {
+    onUpdate() {
       console.log(this.editForm);
-      this.$message("submit!");
+      myhostUpdate(this.editForm).then((res) => {
+        this.$message("onUpdate ok");
+        console.log(res);
+      });
     },
     handleDelete(index, row) {
       console.log(index, row);
+      myhostDel({ id: row.id }).then((res) => {
+        this.$message("handleDelete ok");
+        console.log(res);
+      });
     },
 
     handleClose(done) {
