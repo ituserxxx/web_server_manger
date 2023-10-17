@@ -14,30 +14,56 @@ type student struct {
 
 func Test_a(t *testing.T) {
 	storage, err := tiny.JSONStorage("test.json")
-	if err != nil {
-		panic(err)
-	}
-	database, err := tiny.TinyDB(tiny.CachingMiddleware(storage, 1))
-	if err != nil {
-		panic(err)
-	}
+	database, err := tiny.TinyDB(storage)
 	defer database.Close()
 	table := tiny.GetTable[student](database)
-	//err = table.Insert(student{001, "test"})
-	//if err != nil {
-	//	panic(err)
-	//}
-	//err = table.Update(func(s student) student { s.ID = 002; return s }, func(s student) bool { return true })
-	//if err != nil {
-	//	panic(err)
-	//}
-	stu, err := table.Select(func(s student) bool { return true })
+	//table.Insert(student{1, "test"})
+	//table.Insert(student{2, "test"})
+	//table.Insert(student{3, "test"})
+	students, err := table.Select(func(s student) bool { return true })
 	if err != nil {
-		panic(err)
+		return
 	}
-	fmt.Println(stu)
-	_, err = table.Delete(func(s student) bool { return true })
+	fmt.Printf("\n students\n%#v", students)
+
+	err = table.Update(func(s student) student {
+		s.ID = 444
+		return s
+	}, func(s student) bool {
+		if s.ID == 1 {
+			return true
+		}
+		return false
+	})
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
+
+	//students2, err := table.Select(func(s student) bool {
+	//	if s.ID == 9 {
+	//		return true
+	//	}
+	//	return false
+	//})
+	////if err != nil {
+	////	return
+	////}
+	//fmt.Printf("\n students2\n%#v", students2)
+
+	//students3, err := table.Delete(func(s student) bool {
+	//	if s.ID == 2 {
+	//		return true
+	//	}
+	//	return false
+	//})
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Printf("\n \n%#v", students3)
+
+	students, err = table.Select(func(s student) bool { return true })
+	if err != nil {
+		return
+	}
+	fmt.Printf("\n students\n%#v", students)
 }
