@@ -26,18 +26,18 @@ func Test_a(t *testing.T) {
 	}
 	fmt.Printf("\n students\n%#v", students)
 
-	err = table.Update(func(s student) student {
-		s.ID = 444
-		return s
-	}, func(s student) bool {
-		if s.ID == 1 {
-			return true
-		}
-		return false
-	})
-	if err != nil {
-		panic(err.Error())
-	}
+	//err = table.Update(func(s student) student {
+	//	s.ID = 444
+	//	return s
+	//}, func(s student) bool {
+	//	if s.ID == 1 {
+	//		return true
+	//	}
+	//	return false
+	//})
+	//if err != nil {
+	//	panic(err.Error())
+	//}
 
 	//students2, err := table.Select(func(s student) bool {
 	//	if s.ID == 9 {
@@ -50,16 +50,16 @@ func Test_a(t *testing.T) {
 	////}
 	//fmt.Printf("\n students2\n%#v", students2)
 
-	//students3, err := table.Delete(func(s student) bool {
-	//	if s.ID == 2 {
-	//		return true
-	//	}
-	//	return false
-	//})
-	//if err != nil {
-	//	return
-	//}
-	//fmt.Printf("\n \n%#v", students3)
+	students3, err := table.Delete(func(s student) bool {
+		if s.ID == 3 {
+			return true
+		}
+		return false
+	})
+	if err != nil {
+		return
+	}
+	fmt.Printf("\n \n%#v", students3)
 
 	students, err = table.Select(func(s student) bool { return true })
 	if err != nil {

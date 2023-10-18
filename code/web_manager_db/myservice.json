@@ -1,0 +1,81 @@
+{
+    "MyserviceT": [
+        {
+            "id": "gyxid",
+            "name": "111",
+            "desc": "123444",
+            "host_id": "dofoy",
+            "service_type": "qianhou",
+            "deploy_method": "hou",
+            "git_hou": {
+                "url": "http://localhost:9528/#/service/list",
+                "local": "/xxx",
+                "branch": "master"
+            },
+            "git_qian": {
+                "url": "",
+                "local": "",
+                "branch": ""
+            },
+            "is_open_check": false,
+            "is_open_check_qian": false,
+            "is_open_check_hou": false,
+            "check_time_interval": "",
+            "open_check_qian": {
+                "ip_port": "",
+                "outer_net": "",
+                "internal_net": "",
+                "ip_port_state": false,
+                "internal_net_state": false,
+                "outer_net_state": false
+            },
+            "open_check_hou": {
+                "ip_port": "",
+                "outer_net": "",
+                "internal_net": "",
+                "ip_port_state": false,
+                "internal_net_state": false,
+                "outer_net_state": false
+            }
+        },
+        {
+            "id": "vdelz",
+            "name": "utek",
+            "desc": "laksdjflkskf",
+            "host_id": "dofoy",
+            "service_type": "qianhou",
+            "deploy_method": "qianhou",
+            "git_hou": {
+                "url": "http://localhost:9528/#/service/add",
+                "local": "/xxx",
+                "branch": "master"
+            },
+            "git_qian": {
+                "url": "http://localhost:9528/#/service/add",
+                "local": "/xxx",
+                "branch": "master"
+            },
+            "is_open_check": true,
+            "is_open_check_qian": true,
+            "is_open_check_hou": true,
+            "check_time_interval": "33",
+            "open_check_qian": {
+                "ip_port": "",
+                "outer_net": "",
+                "internal_net": "http://localhost:9528/",
+                "ip_port_state": false,
+                "internal_net_state": false,
+                "outer_net_state": false
+            },
+            "open_check_hou": {
+                "ip_port": "127.0.0.1:8001",
+                "outer_net": "",
+                "internal_net": "127.0.0.1:8001",
+                "ip_port_state": false,
+                "internal_net_state": false,
+                "outer_net_state": false
+            }
+        }
+    ],
+    "_default": null
+}

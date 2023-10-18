@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px" :label-position="labelPosition">
-      <el-form-item label="应用名称">
+      <el-form-item label="*应用名称">
         <el-input v-model="form.name" />
       </el-form-item>
       <el-form-item label="项目描述">
         <el-input v-model="form.desc" type="textarea" />
       </el-form-item>
-      <el-form-item label="部署服务器">
-        <el-select v-model="form.host_id" placeholder="请选择">
+      <el-form-item label="*部署服务器">
+        <el-select v-model="form.host_id" placeholder="请选择" value-key="name">
           <el-option
             v-for="item in host_list"
             :key="item.id"
@@ -118,32 +118,33 @@
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import { myhostGetList } from "@/api/myhost";
+import { myserviceAdd } from "@/api/myservice";
 export default {
   data() {
     return {
       labelPosition: "left",
       host_list: [
-        {
-          id: 1,
-          name: "王小虎",
-          ip: "127.0.0.1",
-          ssh_passwd: "123456",
-          desc: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          id: 2,
-          name: "王小虎",
-          ip: "127.0.0.1",
-          ssh_passwd: "123456",
-          desc: "上海市普陀区金沙江路 1517 弄",
-        },
+        // {
+        //   id: 1,
+        //   name: "王小虎",
+        //   ip: "127.0.0.1",
+        //   ssh_passwd: "123456",
+        //   desc: "上海市普陀区金沙江路 1518 弄",
+        // },
+        // {
+        //   id: 2,
+        //   name: "王小虎",
+        //   ip: "127.0.0.1",
+        //   ssh_passwd: "123456",
+        //   desc: "上海市普陀区金沙江路 1517 弄",
+        // },
       ],
       form: {
         name: "",
@@ -177,15 +178,32 @@ export default {
       },
     };
   },
+  created() {
+    this.fetchData();
+  },
   methods: {
+    fetchData() {
+      myhostGetList().then((res) => {
+        if (res.code == 33) {
+          this.host_list = res.data;
+        } else {
+          this.$message.error(res.data);
+        }
+      });
+    },
+
     onSubmit() {
       console.log(this.form);
-      this.$message("submit!");
-    },
-    onCancel() {
-      this.$message({
-        message: "cancel!",
-        type: "warning",
+      if (this.form.name == "" || this.form.host_id == "") {
+        this.$message.error("必填项不能为空");
+        return;
+      }
+      myserviceAdd(this.form).then((res) => {
+        if (res.code == 33) {
+          this.$message("submit!");
+        } else {
+          this.$message.error(res.data);
+        }
       });
     },
   },

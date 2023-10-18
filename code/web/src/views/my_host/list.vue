@@ -82,19 +82,13 @@ export default {
     fetchData() {
       this.listLoading = true;
       myhostGetList().then((res) => {
-        this.$message("myhostGetList ok");
-        console.log(res);
-        this.tableData = [
-          {
-            id: 1,
-            ip: "127.0.0.1",
-            ssh_user: "root",
-            ssh_passwd: "123456",
-            desc: "上海市普陀区金沙江路 1518 弄",
-          },
-        ];
-        this.tableData = res.data;
         this.listLoading = false;
+        if (res.code == 33) {
+          this.$message("myhostGetList ok");
+          this.tableData = res.data;
+        } else {
+          this.$message.error(res.data);
+        }
       });
     },
     showEditView(index, row) {
@@ -105,15 +99,22 @@ export default {
     onUpdate() {
       console.log(this.editForm);
       myhostUpdate(this.editForm).then((res) => {
-        this.$message("onUpdate ok");
-        console.log(res);
+        if (res.code == 33) {
+          this.$message("onUpdate ok");
+        } else {
+          this.$message.error(res.data);
+        }
       });
     },
     handleDelete(index, row) {
       console.log(index, row);
       myhostDel({ id: row.id }).then((res) => {
-        this.$message("handleDelete ok");
-        console.log(res);
+        if (res.code == 33) {
+          this.tableData.splice(index, 1);
+          this.$message("handleDelete ok");
+        } else {
+          this.$message.error(res.data);
+        }
       });
     },
 

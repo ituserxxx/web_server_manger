@@ -1,0 +1,19 @@
+{
+    "HostT": [
+        {
+            "id": "dofoy",
+            "ip": "127.0.0.1",
+            "ssh_user": "22233",
+            "ssh_passwd": "content",
+            "desc": "content"
+        },
+        {
+            "id": "flbtd",
+            "ip": "192.168.3.212",
+            "ssh_user": "root",
+            "ssh_passwd": "root",
+            "desc": "asdkfjasd"
+        }
+    ],
+    "_default": null
+}

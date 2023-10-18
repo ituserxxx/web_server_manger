@@ -2,28 +2,28 @@ import request from '@/utils/request'
 
 export function myhostAdd(data) {
   return request({
-    url: '/myhost/add',
+    url: '/myhost/Add',
     method: 'post',
     data
   })
 }
 export function myhostDel(data) {
   return request({
-    url: '/myhost/del',
+    url: '/myhost/Del',
     method: 'post',
     data
   })
 }
 export function myhostUpdate(data) {
   return request({
-    url: '/myhost/update',
+    url: '/myhost/Update',
     method: 'post',
     data
   })
 }
 export function myhostGetList(data) {
   return request({
-    url: '/myhost/getList',
+    url: '/myhost/GetList',
     method: 'post',
     data
   })

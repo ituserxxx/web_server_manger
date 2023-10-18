@@ -5,27 +5,32 @@ import (
 	"net/http"
 )
 
-func StartRoute() {
+func StartRoute(router *http.ServeMux) {
 	// GET请求处理
-	http.HandleFunc("/hello", helloHandler)
+	router.HandleFunc("/hello", helloHandler)
 	// POST请求处理
-	http.HandleFunc("/dev-api/myhost/add", middleware(MyhostController.Add))
-	http.HandleFunc("/dev-api/myhost/getList", middleware(MyhostController.GetList))
 
+	router.HandleFunc("/dev-api/user/Login", middleware(UserController.Login))
+	router.HandleFunc("/dev-api/user/Info", middleware(UserController.Info))
+
+	router.HandleFunc("/dev-api/myhost/Add", middleware(MyhostController.Add))
+	router.HandleFunc("/dev-api/myhost/Update", middleware(MyhostController.Update))
+	router.HandleFunc("/dev-api/myhost/Del", middleware(MyhostController.Del))
+	router.HandleFunc("/dev-api/myhost/GetList", middleware(MyhostController.GetList))
+
+	router.HandleFunc("/dev-api/myservice/Add", middleware(MyserviceController.Add))
+	router.HandleFunc("/dev-api/myservice/Update", middleware(MyserviceController.Update))
+	router.HandleFunc("/dev-api/myservice/Del", middleware(MyserviceController.Del))
+	router.HandleFunc("/dev-api/myservice/GetList", middleware(MyserviceController.GetList))
 }
 
 // 自定义中间件函数
 func middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// 中间件逻辑处理
-		fmt.Println("Executing middleware")
-
-		// 检查是否有授权头
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-
 		// 调用下一个处理函数
 		next(w, r)
 	}

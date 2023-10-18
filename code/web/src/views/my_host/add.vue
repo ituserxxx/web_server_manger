@@ -39,6 +39,7 @@ export default {
       console.log(this.form);
       myhostAdd(this.form).then((response) => {
         this.list = response.data;
+        this.$message("myhostAdd ok");
       });
     },
   },

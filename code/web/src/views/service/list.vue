@@ -13,8 +13,16 @@
       <el-table-column prop="name" label="名称" width="180"> </el-table-column>
 
       <el-table-column prop="service_type" label="应用类型" width="180">
+        <template slot-scope="scope">
+          <span v-if="scope.row.service_type === 'qianhou'">前后端</span>
+          <span v-if="scope.row.service_type === 'hou'">后端</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="deploy_method" label="部署方式" width="180">
+      <el-table-column label="部署方式" width="180">
+        <template slot-scope="scope">
+          <span v-if="scope.row.deploy_method === 'qianhou'">前后分离</span>
+          <span v-if="scope.row.deploy_method === 'hou'">后端静态</span>
+        </template>
       </el-table-column>
 
       <!-- <el-table-column prop="is_open_check" label="检测开关" width="180"></el-table-column>
@@ -237,14 +245,14 @@
           </div>
         </el-form>
       </div>
-      <el-button type="primary" @click="onSubmit">Create</el-button>
-      <el-button @click="onCancel">Cancel</el-button>
+      <el-button type="primary" @click="onUpdate">Update</el-button>
+      <el-button @click="handleClose">Cancel</el-button>
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { getList } from "@/api/table";
+import { myserviceGetList, myserviceDel, myserviceUpdate } from "@/api/myservice";
 
 export default {
   data() {
@@ -263,87 +271,16 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true;
-      getList().then((response) => {
-        this.tableData = [
-          {
-            id: 1,
-            name: "xxx1",
-            desc: "desc",
-            host_id: "22",
-            service_type: "qianhou", //qianhou   hou
-            deploy_method: "qianhou", //qianhou   hou
-            git_hou: {
-              url: "xxxx",
-              local: "/dd",
-              branch: "master",
-            },
-            git_qian: {
-              url: "xxxx",
-              local: "/dd",
-              branch: "master",
-            },
-            is_open_check: true,
-            is_open_check_qian: true,
-            is_open_check_hou: true,
-            check_time_interval: "111",
-            open_check_qian: {
-              outer_net: "123.0.0.1",
-              internal_net: "127.0.0.1",
-              outer_net_state: false,
-              internal_net_state: true,
-            },
-            open_check_hou: {
-              ip_port: "127.1.1.1:999",
-              outer_net: "123.0.0.1",
-              internal_net: "127.0.0.1",
-              ip_port_state: false,
-              outer_net_state: true,
-              internal_net_state: true,
-            },
-          },
-          {
-            id: 2,
-            name: "xxx1",
-            desc: "desc",
-            host_id: "22",
-            service_type: "hou", //qianhou   hou
-            deploy_method: "hou", //qianhou   hou
-            git_hou: {
-              url: "xxxx",
-              local: "/dd",
-              branch: "master",
-            },
-            git_qian: {
-              url: "",
-              local: "",
-              branch: "",
-            },
-            is_open_check: true,
-            is_open_check_qian: true,
-            is_open_check_hou: true,
-            check_time_interval: "111",
-            open_check_qian: {
-              outer_net: "123.0.0.1",
-              internal_net: "127.0.0.1",
-              outer_net_state: true,
-              internal_net_state: true,
-            },
-            open_check_hou: {
-              ip_port: "",
-              outer_net: "123.0.0.1",
-              internal_net: "127.0.0.1",
-              ip_port_state: true,
-              outer_net_state: true,
-              internal_net_state: true,
-            },
-          },
-        ];
+      myserviceGetList().then((res) => {
         this.listLoading = false;
+        if (res.code === 33) {
+          this.tableData = res.data;
+        } else {
+          this.$message.error(res.data);
+        }
       });
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
+
     handleView(index, row) {
       console.log(index, row);
       this.drawer = true;
@@ -359,6 +296,27 @@ export default {
     },
     handleDelete(index, row) {
       console.log(index, row);
+      myserviceDel({ id: row.id }).then((res) => {
+        if (res.code == 33) {
+          this.tableData.splice(index, 1);
+          this.$message("handleDelete ok");
+        } else {
+          this.$message.error(res.data);
+        }
+      });
+    },
+    onUpdate() {
+      if (this.form.name == "" || this.form.host_id == "") {
+        this.$message.error("必填项不能为空");
+        return;
+      }
+      myserviceUpdate(this.form).then((res) => {
+        if (res.code == 33) {
+          this.$message("onUpdate ok");
+        } else {
+          this.$message.error(res.data);
+        }
+      });
     },
   },
 };
