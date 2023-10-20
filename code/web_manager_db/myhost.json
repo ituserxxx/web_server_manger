@@ -1,18 +1,25 @@
 {
     "HostT": [
         {
+            "desc": "content",
             "id": "dofoy",
             "ip": "127.0.0.1",
-            "ssh_user": "22233",
             "ssh_passwd": "content",
-            "desc": "content"
+            "ssh_user": "22233"
         },
         {
+            "desc": "asdkfjasd",
             "id": "flbtd",
             "ip": "192.168.3.212",
-            "ssh_user": "root",
             "ssh_passwd": "root",
-            "desc": "asdkfjasd"
+            "ssh_user": "root"
+        },
+        {
+            "id": "zrndf",
+            "ip": "172.16.9.103",
+            "ssh_user": "utek",
+            "ssh_passwd": "123456",
+            "desc": "学习用"
         }
     ],
     "_default": null

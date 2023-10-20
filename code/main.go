@@ -7,16 +7,17 @@ import (
 )
 
 func main() {
-	db.StartDb()
+	db.Init()
 	router := http.NewServeMux()
 	handler := corsMiddleware(router)
 
-	StartRoute(router)
-	fmt.Println("172.16.20.34:8001")
+	InitRoute(router)
+	NewCheckTask()
+	fmt.Println(":8001")
+
 	// 启动HTTP服务器
-	if err := http.ListenAndServe("172.16.20.34:8001", handler); err != nil {
-		panic(err)
-	}
+	http.ListenAndServe(":8001", handler)
+
 }
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -28,20 +29,11 @@ func corsMiddleware(next http.Handler) http.Handler {
 
 		// 对于预检请求（OPTIONS），直接返回成功
 		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
 			return
 		}
 
 		// 继续执行下一个处理程序
 		next.ServeHTTP(w, r)
 	})
-}
-
-// 检查字符串是否在字符串切片中
-func contains(slice []string, str string) bool {
-	for _, s := range slice {
-		if s == str {
-			return true
-		}
-	}
-	return false
 }

@@ -12,33 +12,27 @@ type myserviceDbT struct {
 	MyserviceT MyserviceT `json:"myservice_t"`
 }
 type GitT struct {
-	Url    string `json:"url"`
-	Local  string `json:"local"`
-	Branch string `json:"branch"`
+	Url  string `json:"url"` //git resp url
+	Desc string `json:"desc"`
 }
-type OpenCheckT struct {
-	IpPort           string `json:"ip_port"`
-	OuterNet         string `json:"outer_net"`
-	InternalNet      string `json:"internal_net"`
-	IpPortState      bool   `json:"ip_port_state"`
-	InternalNetState bool   `json:"internal_net_state"`
-	OuterNetState    bool   `json:"outer_net_state"`
+type CheckT struct {
+	ID    string `json:"id"`
+	Type  string `json:"type"`  // http tcp
+	Value string `json:"value"` // url  ip:port
+	Time  string `json:"time"`  // time interval (second)
+	Desc  string `json:"desc"`
+	State bool   `json:"state"`
 }
 type MyserviceT struct {
-	ID                string     `json:"id"`
-	Name              string     `json:"name"`
-	Desc              string     `json:"desc"`
-	HostId            string     `json:"host_id"`
-	ServiceType       string     `json:"service_type"`  //qianhou   hou
-	DeployMethod      string     `json:"deploy_method"` //qianhou   hou
-	GitHou            GitT       `json:"git_hou"`
-	GitQian           GitT       `json:"git_qian"`
-	IsOpenCheck       bool       `json:"is_open_check"`
-	IsOpenCheckQian   bool       `json:"is_open_check_qian"`
-	IsOpenCheckHou    bool       `json:"is_open_check_hou"`
-	CheckTimeInterval string     `json:"check_time_interval"`
-	OpenCheckQian     OpenCheckT `json:"open_check_qian"`
-	OpenCheckHou      OpenCheckT `json:"open_check_hou"`
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Desc         string   `json:"desc"`
+	HostId       string   `json:"host_id"`
+	ServiceType  string   `json:"service_type"`  //qianhou   hou
+	DeployMethod string   `json:"deploy_method"` //qianhou   hou
+	GitList      []GitT   `json:"git_list"`
+	IsOpenCheck  bool     `json:"is_open_check"`
+	CheckList    []CheckT `json:"check_list"`
 }
 
 func NewMyserviceDb() {

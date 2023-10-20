@@ -84,7 +84,7 @@ export default {
       myhostGetList().then((res) => {
         this.listLoading = false;
         if (res.code == 33) {
-          this.$message("myhostGetList ok");
+          // this.$message("myhostGetList ok");
           this.tableData = res.data;
         } else {
           this.$message.error(res.data);

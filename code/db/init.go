@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func StartDb() {
+func Init() {
 	initDbFile()
 	NewMyserviceDb()
 	NewMyhostDb()

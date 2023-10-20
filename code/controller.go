@@ -240,28 +240,30 @@ func (msc *myserviceController) Add(w http.ResponseWriter, r *http.Request) {
 		respErr(w, err.Error())
 		return
 	}
+
+	for i, _ := range params.CheckList {
+		params.CheckList[i].ID = Tool.Krand()
+	}
 	insertData := db.MyserviceT{
-		ID:                Tool.Krand(),
-		Name:              params.Name,
-		Desc:              params.Desc,
-		HostId:            params.HostId,
-		ServiceType:       params.ServiceType,
-		DeployMethod:      params.DeployMethod,
-		GitHou:            params.GitHou,
-		GitQian:           params.GitQian,
-		IsOpenCheck:       params.IsOpenCheck,
-		IsOpenCheckQian:   params.IsOpenCheckQian,
-		IsOpenCheckHou:    params.IsOpenCheckHou,
-		CheckTimeInterval: params.CheckTimeInterval,
-		OpenCheckQian:     params.OpenCheckQian,
-		OpenCheckHou:      params.OpenCheckHou,
+		ID:           Tool.Krand(),
+		Name:         params.Name,
+		Desc:         params.Desc,
+		HostId:       params.HostId,
+		ServiceType:  params.ServiceType,
+		DeployMethod: params.DeployMethod,
+
+		IsOpenCheck: params.IsOpenCheck,
+		GitList:     params.GitList,
+		CheckList:   params.CheckList,
 	}
 	err = db.MyserviceDb.Insert(insertData)
 	if err != nil {
 		respErr(w, err.Error())
 		return
 	}
-	// todo cron task
+	if params.IsOpenCheck {
+		CheckTask.Add(insertData.ID, params.CheckList)
+	}
 	respOk(w, insertData)
 }
 func (msc *myserviceController) Update(w http.ResponseWriter, r *http.Request) {
@@ -293,20 +295,15 @@ func (msc *myserviceController) Update(w http.ResponseWriter, r *http.Request) {
 
 	err = db.MyserviceDb.Update(func(s db.MyserviceT) db.MyserviceT {
 		s = db.MyserviceT{
-			ID:                params.ID,
-			Name:              params.Name,
-			Desc:              params.Desc,
-			HostId:            params.HostId,
-			ServiceType:       params.ServiceType,
-			DeployMethod:      params.DeployMethod,
-			GitHou:            params.GitHou,
-			GitQian:           params.GitQian,
-			IsOpenCheck:       params.IsOpenCheck,
-			IsOpenCheckQian:   params.IsOpenCheckQian,
-			IsOpenCheckHou:    params.IsOpenCheckHou,
-			CheckTimeInterval: params.CheckTimeInterval,
-			OpenCheckQian:     params.OpenCheckQian,
-			OpenCheckHou:      params.OpenCheckHou,
+			ID:           params.ID,
+			Name:         params.Name,
+			Desc:         params.Desc,
+			HostId:       params.HostId,
+			ServiceType:  params.ServiceType,
+			DeployMethod: params.DeployMethod,
+			IsOpenCheck:  params.IsOpenCheck,
+			GitList:      params.GitList,
+			CheckList:    params.CheckList,
 		}
 		return s
 	}, func(s db.MyserviceT) bool {
@@ -334,8 +331,9 @@ func (msc *myserviceController) Update(w http.ResponseWriter, r *http.Request) {
 		respErr(w, "query row is zero by id="+params.ID)
 		return
 	}
-
-	// todo cron task
+	if params.IsOpenCheck {
+		CheckTask.Add(params.ID, params.CheckList)
+	}
 	respOk(w, d[0])
 }
 func (msc *myserviceController) Del(w http.ResponseWriter, r *http.Request) {

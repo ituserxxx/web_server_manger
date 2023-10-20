@@ -8,11 +8,11 @@
         <el-input v-model="form.desc" type="textarea" />
       </el-form-item>
       <el-form-item label="*部署服务器">
-        <el-select v-model="form.host_id" placeholder="请选择" value-key="name">
+        <el-select v-model="form.host_id" placeholder="请选择">
           <el-option
             v-for="item in host_list"
             :key="item.id"
-            :label="item.name"
+            :label="item.ip"
             :value="item.id"
           >
           </el-option>
@@ -34,90 +34,79 @@
           </el-select>
         </el-form-item>
       </div>
-
-      <div v-if="form.service_type === 'hou' || form.deploy_method === 'hou'">
-        <p>后端部署信息</p>
-        <el-form-item label="git 仓库地址">
-          <el-input v-model="form.git_hou.url" type="textarea" />
-        </el-form-item>
-        <el-form-item label="代码位置">
-          <el-input v-model="form.git_hou.local" type="textarea" />
-        </el-form-item>
-        <el-form-item label="线上分支">
-          <el-input v-model="form.git_hou.branch" type="textarea" />
-        </el-form-item>
+      <!-- 仓库 -->
+      <div>
+        仓库 ：
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-plus"
+          @click="addGit"
+        ></el-button>
       </div>
-
-      <div v-if="form.deploy_method === 'qianhou'">
-        <div>
-          <p>前端部署信息</p>
-          <el-form-item label="git 仓库地址">
-            <el-input v-model="form.git_qian.url" type="textarea" />
-          </el-form-item>
-          <el-form-item label="代码位置">
-            <el-input v-model="form.git_qian.local" type="textarea" />
-          </el-form-item>
-          <el-form-item label="线上分支">
-            <el-input v-model="form.git_qian.branch" type="textarea" />
-          </el-form-item>
-        </div>
-        <div>
-          <p>后端部署信息</p>
-          <el-form-item label="git 仓库地址">
-            <el-input v-model="form.git_hou.url" type="textarea" />
-          </el-form-item>
-          <el-form-item label="代码位置">
-            <el-input v-model="form.git_hou.local" type="textarea" />
-          </el-form-item>
-          <el-form-item label="线上分支">
-            <el-input v-model="form.git_hou.branch" type="textarea" />
-          </el-form-item>
+      <div
+        class="git-continer"
+        v-for="(git, index) in form.git_list"
+        :key="index"
+        :prop="git.url"
+      >
+        <div class="git-inner-div">
+          <div style="widht: 700px">
+            <el-form-item label="url：">
+              <el-input v-model="git.url"></el-input>
+            </el-form-item>
+            <el-form-item label="备注：">
+              <el-input v-model="git.desc"></el-input>
+            </el-form-item>
+          </div>
+          <el-button @click.prevent="removeGit(git)">删除</el-button>
         </div>
       </div>
+      <br />
+      <br />
 
       <el-form-item label="状态检测">
         <el-switch v-model="form.is_open_check" />
       </el-form-item>
+      <!-- 检测项 -->
 
-      <div v-if="form.is_open_check">
-        <el-form-item label="前端" v-if="form.service_type !== 'hou'">
-          <el-switch v-model="form.is_open_check_qian" />
-        </el-form-item>
-
-        <el-form-item label="后端">
-          <el-switch v-model="form.is_open_check_hou" />
-        </el-form-item>
-
-        <el-form-item label="检测时间间隔(秒)">
-          <el-input v-model="form.check_time_interval" type="textarea" />
-        </el-form-item>
+      <div>
+        <span style="width: 100px">检测项 ：</span>
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-plus"
+          @click="addCheck"
+        ></el-button>
       </div>
-
-      <div v-if="form.is_open_check_qian">
-        <p>检测-配置前端</p>
-        <el-form-item label="检测外网 Url">
-          <el-input v-model="form.open_check_qian.outer_net" type="textarea" />
-        </el-form-item>
-        <el-form-item label="检测内网 Url">
-          <el-input v-model="form.open_check_qian.internal_net" type="textarea" />
-        </el-form-item>
+      <div
+        class="check-continer"
+        v-for="(check, index) in form.check_list"
+        :key="index"
+        :prop="check.url"
+      >
+        <div class="check-inner-div">
+          <el-form-item label="检测方式">
+            <el-select v-model="check.type" placeholder="请选择">
+              <el-option label="http" value="http" />
+              <el-option label="tcp" value="tcp" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="内容">
+            <el-input v-model="check.value"></el-input>
+          </el-form-item>
+          <el-form-item label="间隔时间（秒）">
+            <el-input v-model="check.time"></el-input>
+          </el-form-item>
+          <el-form-item label="备注：">
+            <el-input v-model="check.desc"></el-input>
+          </el-form-item>
+          <el-button @click.prevent="removeCheck(check)">删除</el-button>
+        </div>
       </div>
-
-      <div v-if="form.is_open_check_hou">
-        <p>检测-配置后端</p>
-        <el-form-item label="检测 ip:port">
-          <el-input v-model="form.open_check_hou.ip_port" type="textarea" />
-        </el-form-item>
-        <el-form-item label="检测外网 Url">
-          <el-input v-model="form.open_check_hou.outer_net" type="textarea" />
-        </el-form-item>
-        <el-form-item label="检测内网 Url">
-          <el-input v-model="form.open_check_hou.internal_net" type="textarea" />
-        </el-form-item>
-      </div>
-
+      <br /><br />
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
+        <el-button type="primary" @click="onSubmit()">保存</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -130,58 +119,63 @@ export default {
   data() {
     return {
       labelPosition: "left",
-      host_list: [
-        // {
-        //   id: 1,
-        //   name: "王小虎",
-        //   ip: "127.0.0.1",
-        //   ssh_passwd: "123456",
-        //   desc: "上海市普陀区金沙江路 1518 弄",
-        // },
-        // {
-        //   id: 2,
-        //   name: "王小虎",
-        //   ip: "127.0.0.1",
-        //   ssh_passwd: "123456",
-        //   desc: "上海市普陀区金沙江路 1517 弄",
-        // },
-      ],
+      host_list: [],
       form: {
         name: "",
         desc: "",
         host_id: "",
         service_type: "", //qianhou   hou
         deploy_method: "", //qianhou   hou
-        git_hou: {
-          url: "",
-          local: "",
-          branch: "",
-        },
-        git_qian: {
-          url: "",
-          local: "",
-          branch: "",
-        },
+        git_list: [
+          // {
+          //   url: "", // git resp url
+          //   desc: "", // desc
+          // },
+        ],
         is_open_check: false,
-        is_open_check_qian: false,
-        is_open_check_hou: false,
-        check_time_interval: "",
-        open_check_qian: {
-          outer_net: "",
-          internal_net: "",
-        },
-        open_check_hou: {
-          ip_port: "",
-          outer_net: "",
-          internal_net: "",
-        },
+        check_list: [
+          // {
+          //   type: "", // http tcp
+          //   value: "", // url  ip:port
+          //   time: "", // time interval
+          //   desc: "", // desc
+          // },
+        ],
       },
     };
   },
   created() {
     this.fetchData();
+    // this.addCheck();
+    // this.addGit();
   },
   methods: {
+    addGit() {
+      this.form.git_list.push({
+        url: "", // git resp url
+        desc: "", // desc
+      });
+    },
+    removeGit(item) {
+      var index = this.form.git_list.indexOf(item);
+      if (index !== -1) {
+        this.form.git_list.splice(index, 1);
+      }
+    },
+    addCheck() {
+      this.form.check_list.push({
+        type: "", // http tcp
+        value: "", // url  ip:port
+        time: "", // time interval
+        desc: "", // desc
+      });
+    },
+    removeCheck(item) {
+      var index = this.form.check_list.indexOf(item);
+      if (index !== -1) {
+        this.form.check_list.splice(index, 1);
+      }
+    },
     fetchData() {
       myhostGetList().then((res) => {
         if (res.code == 33) {
@@ -194,10 +188,35 @@ export default {
 
     onSubmit() {
       console.log(this.form);
+      if (this.form.git_list.length > 0) {
+        for (let i = 0; i < this.form.git_list.length; i++) {
+          const item = this.form.git_list[i];
+          if (item.url.trim() === "") {
+            // 数据为空，进行相应的处理逻辑
+            this.$message.error("仓库git项不能为空");
+            return;
+          }
+        }
+      }
+      if (this.form.check_list.length > 0) {
+        for (let i = 0; i < this.form.check_list.length; i++) {
+          const item = this.form.check_list[i];
+          if (
+            item.type.trim() === "" ||
+            item.value.trim() === "" ||
+            item.time.trim() === ""
+          ) {
+            // 数据为空，进行相应的处理逻辑
+            this.$message.error("检测项不能为空");
+            return;
+          }
+        }
+      }
       if (this.form.name == "" || this.form.host_id == "") {
         this.$message.error("必填项不能为空");
         return;
       }
+
       myserviceAdd(this.form).then((res) => {
         if (res.code == 33) {
           this.$message("submit!");
@@ -213,5 +232,41 @@ export default {
 <style scoped>
 .line {
   text-align: center;
+}
+
+.git-continer {
+  width: 80%; /* 设置容器的宽度 */
+  height: auto; /* 自适应高度 */
+  display: flex; /* 将容器设置为弹性容器 */
+  flex-wrap: wrap; /* 允许容器内的元素换行显示 */
+}
+
+.git-inner-div {
+  width: 80%; /* 设置内层div的宽度 */
+  height: auto; /* 自适应高度 */
+  margin: 20px; /* 设置内层div之间的间距 */
+  padding: 10px; /* 设置内层div的内边距 */
+  border: 1px solid #ccc; /* 设置内层div的边框 */
+  /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 添加阴影效果 */
+  border-radius: 4px; /* 使用圆角边框 */
+  position: relative; /* 使子元素的绝对定位生效 */
+}
+
+.check-continer {
+  width: 80%; /* 设置容器的宽度 */
+  height: auto; /* 自适应高度 */
+  display: flex; /* 将容器设置为弹性容器 */
+  flex-wrap: wrap; /* 允许容器内的元素换行显示 */
+}
+
+.check-inner-div {
+  width: 80%; /* 设置内层div的宽度 */
+  height: auto; /* 自适应高度 */
+  margin: 20px; /* 设置内层div之间的间距 */
+  padding: 10px; /* 设置内层div的内边距 */
+  border: 1px solid #ccc; /* 设置内层div的边框 */
+  /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 添加阴影效果 */
+  border-radius: 4px; /* 使用圆角边框 */
+  position: relative; /* 使子元素的绝对定位生效 */
 }
 </style>

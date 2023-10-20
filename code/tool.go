@@ -13,17 +13,16 @@ var Tool = &tool{}
 type tool struct {
 }
 
-func (to *tool) ChecIpPortIsOk(ipPort string) string {
+func (to *tool) CheckTcp(ipPort string) string {
 	// 设置连接超时时间
 	conn, err := net.DialTimeout("tcp", ipPort, time.Duration(10)*time.Second)
 	if err != nil {
 		return err.Error()
 	}
 	defer conn.Close()
-
 	return ""
 }
-func (to *tool) CheckUrlIsOk(urlStr string) string {
+func (to *tool) CheckHttp(urlStr string) string {
 	// 发送 HTTP GET 请求
 	response, err := http.Get(urlStr)
 	if err != nil {
@@ -42,15 +41,13 @@ func (to *tool) CheckUrlIsOk(urlStr string) string {
 func (to *tool) Krand() string {
 	kind := 1
 	size := 5
-	// 随机字符串
-	//func Krand(size int, kind int) string {
+
 	ikind, kinds, result := kind, [][]int{[]int{10, 48}, []int{26, 97}, []int{26, 65}}, make([]byte, size)
-	rand.Seed(time.Now().UnixNano())
+	//rand.Seed(time.Now().UnixNano())
 	for i := 0; i < size; i++ {
 
 		scope, base := kinds[ikind][0], kinds[ikind][1]
 		result[i] = uint8(base + rand.Intn(scope))
 	}
 	return string(result)
-	//}
 }

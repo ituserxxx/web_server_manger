@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func StartRoute(router *http.ServeMux) {
+func InitRoute(router *http.ServeMux) {
 	// GET请求处理
 	router.HandleFunc("/hello", helloHandler)
 	// POST请求处理
