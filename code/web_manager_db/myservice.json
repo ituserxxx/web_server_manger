@@ -1,3 +1,33 @@
 {
+    "MyserviceT": [
+        {
+            "id": "apnls",
+            "name": "111",
+            "desc": "111",
+            "host_id": "zrndf",
+            "service_type": "qianhou",
+            "deploy_method": "qianhou",
+            "git_list": [],
+            "is_open_check": true,
+            "check_list": [
+                {
+                    "id": "qafgk",
+                    "type": "http",
+                    "value": "http://172.16.9.103:6003",
+                    "time": "6",
+                    "desc": "111",
+                    "state": true
+                },
+                {
+                    "id": "hsjlj",
+                    "type": "tcp",
+                    "value": "172.16.9.103:6008",
+                    "time": "8",
+                    "desc": "22",
+                    "state": true
+                }
+            ]
+        }
+    ],
     "_default": null
 }

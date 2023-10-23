@@ -5,11 +5,14 @@ import (
 	"os"
 )
 
+var dbFileList = []string{"myhost.json", "myservice.json", "admin.json", "notify.json"}
+
 func Init() {
 	initDbFile()
 	NewMyserviceDb()
 	NewMyhostDb()
 	NewAdminDb()
+	NewNotifyDb()
 
 }
 
@@ -26,7 +29,7 @@ func initDbFile() {
 		}
 
 	}
-	dbFileList := []string{"myhost.json", "myservice.json", "admin.json"}
+
 	for _, s := range dbFileList {
 		ns := dbDir + "/" + s
 		if _, err := os.Stat(ns); os.IsNotExist(err) {

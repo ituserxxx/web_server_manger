@@ -1,14 +1,15 @@
 package db
 
 import (
-	"errors"
 	tiny "github.com/Yiwen-Chan/tinydb"
 )
 
 var MyserviceDb *myserviceDbT
 
 type myserviceDbT struct {
-	TableName  string     `json:"table_name"`
+	TableName  string `json:"table_name"`
+	storage    *tiny.StorageJSON
+	database   *tiny.Database
 	MyserviceT MyserviceT `json:"myservice_t"`
 }
 type GitT struct {
@@ -36,81 +37,70 @@ type MyserviceT struct {
 }
 
 func NewMyserviceDb() {
+
 	MyserviceDb = &myserviceDbT{
 		TableName: "web_manager_db/myservice.json",
 	}
-}
-func (ms *myserviceDbT) getTable() (*tiny.Table[MyserviceT], *tiny.Database, error) {
-	storage, err := tiny.JSONStorage(ms.TableName)
+	storage, err := tiny.JSONStorage(MyserviceDb.TableName)
 	if err != nil {
-		return nil, nil, err
+		panic(err)
 	}
-	database, err := tiny.TinyDB(storage)
+	MyserviceDb.storage = storage
 
-	table := tiny.GetTable[MyserviceT](database)
-	return table, database, nil
+	database, err := tiny.TinyDB(MyserviceDb.storage)
+	if err != nil {
+		panic(err)
+	}
+	MyserviceDb.database = database
+
+}
+func (ms *myserviceDbT) getTable() *tiny.Table[MyserviceT] {
+	if ms.database == nil || ms.storage == nil {
+		NewMyserviceDb()
+	}
+	return tiny.GetTable[MyserviceT](ms.database)
 }
 
 func (ms *myserviceDbT) Insert(data MyserviceT) error {
-	table, database, err := ms.getTable()
-	if err != nil {
-		return err
-	}
-	defer database.Close()
-	err = table.Insert(data)
+
+	//defer ms.database.Close()
+	err := ms.getTable().Insert(data)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (ms *myserviceDbT) Update(data func(s MyserviceT) MyserviceT, condition func(s MyserviceT) bool) error {
-	table, database, err := ms.getTable()
+
+	err := ms.getTable().Update(data, condition)
 	if err != nil {
 		return err
-	}
-	defer database.Close()
-	err = table.Update(data, condition)
-	if err != nil {
-		panic(err.Error())
 	}
 	return nil
 }
 func (ms *myserviceDbT) QueryRowOne(condition func(s MyserviceT) bool) (MyserviceT, error) {
 	var tmp MyserviceT
-	table, database, err := ms.getTable()
-	if err != nil {
-		return tmp, err
-	}
-	defer database.Close()
-	ls, err := table.Select(condition)
+
+	ls, err := ms.getTable().Select(condition)
 	if err != nil {
 		return tmp, err
 	}
 	if len(ls) != 1 {
-		return tmp, errors.New("query result is no")
+		return tmp, nil
 	}
 	return ls[0], nil
 }
 func (ms *myserviceDbT) QueryRow(condition func(s MyserviceT) bool) ([]MyserviceT, error) {
-	var data = make([]MyserviceT, 0)
-	table, database, err := ms.getTable()
-	if err != nil {
-		return data, err
-	}
-	defer database.Close()
-	data, err = table.Select(condition)
+
+	data, err := ms.getTable().Select(condition)
 	if err != nil {
 		return data, err
 	}
 	return data, nil
 }
 func (ms *myserviceDbT) Del(id string) error {
-	table, database, err := ms.getTable()
-	if err != nil {
-		return err
-	}
-	defer database.Close()
-	_, err = table.Delete(func(s MyserviceT) bool {
+
+	_, err := ms.getTable().Delete(func(s MyserviceT) bool {
 		if s.ID == id {
 			return true
 		}

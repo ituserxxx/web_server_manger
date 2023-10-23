@@ -1,0 +1,12 @@
+{
+    "NotifyT": [
+        {
+            "token": "1",
+            "qywx_webhook": "1111",
+            "qywx_is_open": true,
+            "dd_webhook": "2222333",
+            "dd_is_open": true
+        }
+    ],
+    "_default": null
+}

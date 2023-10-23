@@ -1,7 +1,6 @@
 package db
 
 import (
-	"errors"
 	tiny "github.com/Yiwen-Chan/tinydb"
 )
 
@@ -9,6 +8,8 @@ var AdminDb *adminDbT
 
 type adminDbT struct {
 	TableName string `json:"table_name"`
+	storage   *tiny.StorageJSON
+	database  *tiny.Database
 	AdminDbT  AdminT `json:"admin_db_t"`
 }
 
@@ -22,7 +23,21 @@ func NewAdminDb() {
 	AdminDb = &adminDbT{
 		TableName: "web_manager_db/admin.json",
 	}
-	a, err := AdminDb.QueryRow(func(s AdminT) bool {
+	storage, err := tiny.JSONStorage(AdminDb.TableName)
+	if err != nil {
+		panic(err)
+	}
+	AdminDb.storage = storage
+
+	database, err := tiny.TinyDB(AdminDb.storage)
+	if err != nil {
+		panic(err)
+	}
+	AdminDb.database = database
+	AdminDb.initAdminuser()
+}
+func (ad *adminDbT) initAdminuser() {
+	a, err := ad.QueryRow(func(s AdminT) bool {
 		if s.Name == "admin" {
 			return true
 		}
@@ -32,7 +47,7 @@ func NewAdminDb() {
 		println("init admin fail : " + err.Error())
 	} else {
 		if len(a) == 0 {
-			AdminDb.Insert(AdminT{
+			ad.Insert(AdminT{
 				Token:  "1",
 				Name:   "admin",
 				Passwd: "admin123..",
@@ -40,36 +55,24 @@ func NewAdminDb() {
 		}
 	}
 }
-func (ad *adminDbT) getTable() (*tiny.Table[AdminT], *tiny.Database, error) {
-	storage, err := tiny.JSONStorage(ad.TableName)
-	if err != nil {
-		return nil, nil, err
+func (ad *adminDbT) getTable() *tiny.Table[AdminT] {
+	if ad.database == nil || ad.storage == nil {
+		NewAdminDb()
 	}
-	database, err := tiny.TinyDB(storage)
-
-	table := tiny.GetTable[AdminT](database)
-	return table, database, nil
+	return tiny.GetTable[AdminT](ad.database)
 }
 
 func (ad *adminDbT) Insert(data AdminT) error {
-	table, database, err := ad.getTable()
-	if err != nil {
-		return err
-	}
-	defer database.Close()
-	err = table.Insert(data)
+
+	err := ad.getTable().Insert(data)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (ad *adminDbT) Update(data func(s AdminT) AdminT, condition func(s AdminT) bool) error {
-	table, database, err := ad.getTable()
-	if err != nil {
-		return err
-	}
-	defer database.Close()
-	err = table.Update(data, condition)
+
+	err := ad.getTable().Update(data, condition)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -77,40 +80,26 @@ func (ad *adminDbT) Update(data func(s AdminT) AdminT, condition func(s AdminT) 
 }
 func (ad *adminDbT) QueryRowOne(condition func(s AdminT) bool) (AdminT, error) {
 	var tmp AdminT
-	table, database, err := ad.getTable()
-	if err != nil {
-		return tmp, err
-	}
-	defer database.Close()
-	ls, err := table.Select(condition)
+
+	ls, err := ad.getTable().Select(condition)
 	if err != nil {
 		return tmp, err
 	}
 	if len(ls) != 1 {
-		return tmp, errors.New("query result is no")
+		return tmp, nil
 	}
 	return ls[0], nil
 }
 func (ad *adminDbT) QueryRow(condition func(s AdminT) bool) ([]AdminT, error) {
-	var data = make([]AdminT, 0)
-	table, database, err := ad.getTable()
-	if err != nil {
-		return data, err
-	}
-	defer database.Close()
-	data, err = table.Select(condition)
+
+	data, err := ad.getTable().Select(condition)
 	if err != nil {
 		return data, err
 	}
 	return data, nil
 }
 func (ad *adminDbT) Del(token string) error {
-	table, database, err := ad.getTable()
-	if err != nil {
-		return err
-	}
-	defer database.Close()
-	_, err = table.Delete(func(s AdminT) bool {
+	_, err := ad.getTable().Delete(func(s AdminT) bool {
 		if s.Token == token {
 			return true
 		}
