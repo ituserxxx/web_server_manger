@@ -9,7 +9,7 @@ func RegisterRoute() http.Handler {
 	router := http.NewServeMux()
 	handler := corsMiddleware(router)
 
-	fs := http.FileServer(http.Dir("web/dist"))
+	fs := http.FileServer(http.Dir("dist"))
 
 	// 建立路由规则，将所有请求交给静态文件处理器处理
 	router.Handle("/", fs)
